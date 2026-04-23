@@ -1,0 +1,206 @@
+# 🤖 PSX Marketing Bot — Setup Guide
+
+Automatically generates and posts 3 PSX trading content posts per day to your Facebook page using real news + OpenAI.
+
+---
+
+## 📁 Files Overview
+
+```
+psx_marketing_bot/
+├── main.py              ← Run this to start the bot
+├── news_scraper.py      ← Fetches PSX news from RSS feeds
+├── post_generator.py    ← Uses OpenAI to write Facebook posts
+├── facebook_poster.py   ← Posts to your Facebook page
+├── requirements.txt     ← Python packages needed
+├── .env.example         ← Config template (rename to .env)
+└── logs/                ← All drafts and logs saved here
+```
+
+---
+
+## ⚡ STEP 1 — Install Python & Dependencies
+
+Make sure Python 3.10+ is installed, then run:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## ⚡ STEP 2 — Set Up Your .env File
+
+1. Rename `.env.example` to `.env`
+2. Fill in your keys (see below for how to get them)
+
+```
+OPENAI_API_KEY=sk-...
+FACEBOOK_PAGE_ID=...
+FACEBOOK_ACCESS_TOKEN=...
+AUTO_POST=false           ← change to true when ready
+WHATSAPP_GROUP_LINK=https://chat.whatsapp.com/your-link
+```
+
+---
+
+## ⚡ STEP 3 — Get Your OpenAI API Key
+
+1. Go to https://platform.openai.com/api-keys
+2. Click "Create new secret key"
+3. Copy and paste into `.env`
+
+💡 Estimated cost: ~$5-8/month for 3 posts/day using GPT-4o
+
+---
+
+## ⚡ STEP 4 — Get Your Facebook Page Access Token
+
+### One-time Setup:
+
+1. Go to https://developers.facebook.com/apps
+2. Click "Create App" → Choose "Business"
+3. Under "Add Products", add **Pages API**
+4. Go to **Tools → Graph API Explorer**
+5. Select your App from the dropdown
+6. Select your Page from "User or Page" dropdown
+7. Add permissions: `pages_manage_posts`, `pages_read_engagement`
+8. Click "Generate Access Token"
+9. Copy the token into `.env` as `FACEBOOK_ACCESS_TOKEN`
+10. Get your Page ID: Go to your Facebook Page → About → Page ID
+
+### Get Long-Lived Token (DO THIS — avoids daily re-login):
+
+Run this once in Python:
+
+```python
+from facebook_poster import get_long_lived_token
+get_long_lived_token(
+    app_id="YOUR_APP_ID",
+    app_secret="YOUR_APP_SECRET",
+    short_token="YOUR_SHORT_TOKEN"
+)
+```
+
+Save the output token in `.env`. It lasts 60 days.
+
+---
+
+## ⚡ STEP 5 — Test the Bot (Safe — No Posting)
+
+```bash
+python main.py --test
+```
+
+This will:
+- Fetch real PSX news ✅
+- Generate all 3 posts using OpenAI ✅
+- Print them to screen and save to logs/ ✅
+- NOT post to Facebook ✅
+
+Check `logs/` folder to review the drafts.
+
+---
+
+## ⚡ STEP 6 — Post Manually (First Real Test)
+
+```bash
+# Post all 3 right now
+python main.py --post now
+
+# Post only morning post
+python main.py --post morning
+```
+
+---
+
+## ⚡ STEP 7 — Run the Auto Scheduler
+
+When you are happy with the posts, enable auto-posting:
+
+1. Set `AUTO_POST=true` in `.env`
+2. Run the scheduler:
+
+```bash
+python main.py
+```
+
+The bot will now post automatically at:
+- **08:30 AM** → Morning Briefing
+- **01:00 PM** → Midday Market Update  
+- **07:00 PM** → Evening Recap + FOMO
+
+---
+
+## 🖥️ Run 24/7 on a Server (Optional)
+
+To keep the bot running even when you close your laptop:
+
+### Option A — Windows Task Scheduler
+Create a task that runs `python main.py` at startup.
+
+### Option B — Linux/Mac with screen
+```bash
+screen -S psx-bot
+python main.py
+# Press Ctrl+A then D to detach
+```
+
+### Option C — Free Hosting (Railway.app)
+1. Push this folder to a GitHub repo
+2. Connect to Railway.app (free tier)
+3. Set environment variables in Railway dashboard
+4. Deploy
+
+---
+
+## 📋 Daily Log Files
+
+Every post is saved in `logs/` as a JSON file:
+```
+logs/morning_20260424_0830.json
+logs/midday_20260424_1300.json
+logs/evening_20260424_1900.json
+logs/bot.log  ← Full activity log
+```
+
+---
+
+## 🛠️ Customization
+
+### Change posting times:
+Edit in `.env`:
+```
+POST_TIME_1=09:00
+POST_TIME_2=12:30
+POST_TIME_3=18:00
+```
+
+### Change post style/tone:
+Edit `SYSTEM_PROMPT` in `post_generator.py`
+
+### Add more news sources:
+Add RSS URLs to `RSS_FEEDS` dict in `news_scraper.py`
+
+---
+
+## ❓ Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| `openai` import error | Run `pip install openai` |
+| Facebook token expired | Generate new token, update `.env` |
+| No news fetched | Check your internet connection |
+| Posts not generating | Check your OpenAI API key and balance |
+| Facebook post fails | Verify PAGE_ID is correct (numbers only) |
+
+---
+
+## 💰 Monthly Cost Estimate
+
+| Service | Cost |
+|---------|------|
+| OpenAI GPT-4o (3 posts/day) | ~$5-8 |
+| Facebook Graph API | Free |
+| Hosting (Railway free tier) | Free |
+| **Total** | **~$5-8/month** |
