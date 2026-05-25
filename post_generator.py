@@ -1,7 +1,7 @@
 """
 post_generator.py
 -----------------
-Uses OpenAI GPT-4o to convert raw PSX news into
+Uses OpenAI GPT-4.1-mini to convert raw PSX news into
 3 ready-to-post Facebook posts per day.
 
 Post types:
@@ -107,7 +107,7 @@ def generate_post(post_type: str, news_summary: str) -> dict:
     logger.info(f"🤖 Generating {post_type} post via OpenAI...")
 
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4.1-mini",
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user",   "content": user_prompt},

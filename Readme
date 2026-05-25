@@ -50,7 +50,7 @@ WHATSAPP_GROUP_LINK=https://chat.whatsapp.com/your-link
 2. Click "Create new secret key"
 3. Copy and paste into `.env`
 
-💡 Estimated cost: ~$5-8/month for 3 posts/day using GPT-4o
+💡 Estimated cost: ~$5-8/month for 3 posts/day using GPT-4.1-mini
 
 ---
 
@@ -200,7 +200,7 @@ Add RSS URLs to `RSS_FEEDS` dict in `news_scraper.py`
 
 | Service | Cost |
 |---------|------|
-| OpenAI GPT-4o (3 posts/day) | ~$5-8 |
+| OpenAI GPT-4.1-mini (3 posts/day) | ~$5-8 |
 | Facebook Graph API | Free |
 | Hosting (Railway free tier) | Free |
 | **Total** | **~$5-8/month** |

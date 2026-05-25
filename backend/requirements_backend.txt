@@ -1,0 +1,11 @@
+# Backend-specific dependencies (add to project requirements.txt)
+fastapi>=0.111.0
+uvicorn[standard]>=0.30.0
+python-jose[cryptography]>=3.3.0
+python-multipart>=0.0.9
+# Already in project: python-dotenv, openai, requests, feedparser, beautifulsoup4
+
+# Stock data & technical analysis
+yfinance>=0.2.40
+pandas-ta>=0.3.14b
+pandas>=2.0.0
